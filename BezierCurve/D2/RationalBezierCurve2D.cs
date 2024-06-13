@@ -1,24 +1,24 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BezierCurve.Utils;
+using UnityEngine;
 
 namespace BezierCurve
 {
-	public class RationalBezierCurve : BezierCurve
+	public class RationalBezierCurve2D : BezierCurve2D
 	{
 		private readonly List<float> _controlPointsRatios;
 
-		public RationalBezierCurve(List<Vector3> controlPoints, List<float> controlPointsRatios) : base(controlPoints)
+		public RationalBezierCurve2D(List<Vector2> controlPoints, List<float> controlPointsRatios) : base(controlPoints)
 		{
 			_controlPointsRatios = controlPointsRatios;
 		}
 		
-		public override Vector3 GetPoint(float t)
+		public override Vector2 GetPoint(float t)
 		{
 			t = NormalizeT(t);
 
 			var n = ControlPoints.Count - 1;
-			var numerator = Vector3.zero;
+			var numerator = Vector2.zero;
 			var denominator = 0.0f;
 			for (var i = 0; i <= n; i++)
 			{
@@ -30,7 +30,7 @@ namespace BezierCurve
 			return numerator / denominator;
 		}
 		
-		public override Vector3 GetVelocity(float t)
+		public override Vector2 GetFirstDerivative(float t)
 		{
 			t = NormalizeT(t);
 
@@ -39,33 +39,7 @@ namespace BezierCurve
 			       (GetPointK(1, n - 1, t) - GetPointK(0, n - 1, t));
 		}
 		
-		public override float GetCurvature(float t)
-		{
-			var vel = Vector3Utils.ToVector2XZ(GetVelocity(t));
-			var acc = Vector3Utils.ToVector2XZ(GetAcceleration(t));
-
-			return -(acc.y * vel.x - acc.x * vel.y) / Mathf.Pow(vel.x * vel.x + vel.y * vel.y, 3.0f / 2.0f);
-		}
-
-		protected override Vector3 GetRawPoint(float t)
-		{
-			t = Mathf.Clamp01(t);
-
-			var n = ControlPoints.Count - 1;
-
-			var numerator = Vector3.zero;
-			var denominator = 0.0f;
-			for (var i = 0; i <= n; i++)
-			{
-				numerator += MathUtils.GetBernsteinBasisPolynomials(n, i, t) * ControlPoints[i] *
-				             _controlPointsRatios[i];
-				denominator += MathUtils.GetBernsteinBasisPolynomials(n, i, t) * _controlPointsRatios[i];
-			}
-
-			return numerator / denominator;
-		}
-		
-		protected override Vector3 GetAcceleration(float t)
+		public override Vector2 GetSecondDerivative(float t)
 		{
 			t = NormalizeT(t);
 			
@@ -86,9 +60,33 @@ namespace BezierCurve
 			return part1 - part2;
 		}
 
-		private Vector3 GetPointK(int i, int k, float t)
+		// TODO: implement
+		public override Vector2 GetThirdDerivative(float t)
 		{
-			var numerator = Vector3.zero;
+			return base.GetThirdDerivative(t);
+		}
+
+		protected override Vector2 GetRawPoint(float t)
+		{
+			t = Mathf.Clamp01(t);
+
+			var n = ControlPoints.Count - 1;
+
+			var numerator = Vector2.zero;
+			var denominator = 0.0f;
+			for (var i = 0; i <= n; i++)
+			{
+				numerator += MathUtils.GetBernsteinBasisPolynomials(n, i, t) * ControlPoints[i] *
+				             _controlPointsRatios[i];
+				denominator += MathUtils.GetBernsteinBasisPolynomials(n, i, t) * _controlPointsRatios[i];
+			}
+
+			return numerator / denominator;
+		}
+
+		private Vector2 GetPointK(int i, int k, float t)
+		{
+			var numerator = Vector2.zero;
 			var denominator = 0.0f;
 			for (var j = 0; j <= k; j++)
 			{

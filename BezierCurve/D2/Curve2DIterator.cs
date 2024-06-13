@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace BezierCurve
 {
-    public class BezierCurveIterator
+    public class Curve2DIterator
     {
-        private readonly BezierCurve _curve;
+        private readonly ICurve2D _curve;
         private float _currentPosition;
-        private Vector3 _currentPoint;
+        private Vector2 _currentPoint;
 
-        public BezierCurveIterator(BezierCurve curve)
+        public Curve2DIterator(ICurve2D curve)
         {
             _curve = curve;
             _currentPosition = 0.0f;
@@ -17,18 +17,28 @@ namespace BezierCurve
             _currentPoint = curve.GetPoint(_currentPosition);
         }
 
-        public Vector3 GetPoint(float distance)
+        public Vector2 GetPoint(float distance)
         {
-            var shift = distance / _curve.GetLength();
+            var shift = distance / _curve.Length;
             var newPosition = _currentPosition + shift;
             _currentPosition = Mathf.Clamp01(newPosition);
             _currentPoint = _curve.GetPoint(newPosition);
             return _currentPoint;
         }
         
-        public Vector3 GetVelocity()
+        public Vector2 GetFirstDerivative()
         {
-            return _curve.GetVelocity(_currentPosition).normalized + _currentPoint;
+            return _curve.GetFirstDerivative(_currentPosition).normalized + _currentPoint;
+        }
+        
+        public Vector2 GetSecondDerivative()
+        {
+            return _curve.GetSecondDerivative(_currentPosition).normalized + _currentPoint;
+        }
+        
+        public Vector2 GetThirdDerivative()
+        {
+            return _curve.GetThirdDerivative(_currentPosition).normalized + _currentPoint;
         }
 
         public float GetCurvature()
