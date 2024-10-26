@@ -13,7 +13,7 @@ namespace BezierCurve
 		private readonly List<float> _arcsLength = new List<float> { 0 };
 		private readonly int _precision;
 
-		public BezierCurve3D(List<Vector3> controlPoints, int precision = 20)
+		internal BezierCurve3D(List<Vector3> controlPoints, int precision = 20)
 		{
 			ControlPoints = controlPoints;
 			_precision = precision;
@@ -21,7 +21,7 @@ namespace BezierCurve
 
 		public float Length { get; private set; }
 
-		public void Build()
+		internal void Build()
 		{
 			var precision = 1.0f / (_precision * ControlPoints.Count);
 
@@ -31,6 +31,11 @@ namespace BezierCurve
 				Length += arcLength;
 				_arcsLength.Add(Length);
 			}
+		}
+
+		public Curve3DIterator GetIterator(float distance, bool returnLast)
+		{
+			return new Curve3DIterator(this, distance, returnLast);
 		}
 
 		public virtual Vector3 GetPoint(float t)

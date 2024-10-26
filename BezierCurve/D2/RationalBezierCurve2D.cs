@@ -8,7 +8,7 @@ namespace BezierCurve
 	{
 		private readonly List<float> _controlPointsRatios;
 
-		public RationalBezierCurve2D(List<Vector2> controlPoints, List<float> controlPointsRatios) : base(controlPoints)
+		internal RationalBezierCurve2D(List<Vector2> controlPoints, List<float> controlPointsRatios, int precision = 20) : base(controlPoints, precision)
 		{
 			_controlPointsRatios = controlPointsRatios;
 		}

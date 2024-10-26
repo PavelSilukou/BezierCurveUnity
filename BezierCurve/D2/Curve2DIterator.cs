@@ -1,4 +1,5 @@
-﻿using BezierCurve.Utils;
+﻿using System;
+using BezierCurve.Utils;
 using UnityEngine;
 
 namespace BezierCurve
@@ -6,47 +7,43 @@ namespace BezierCurve
     public class Curve2DIterator
     {
         private readonly ICurve2D _curve;
+        private readonly float _shift;
+        private bool _returnLast;
         private float _currentPosition;
-        private Vector2 _currentPoint;
 
-        public Curve2DIterator(ICurve2D curve)
+        public Curve2DIterator(ICurve2D curve, float distance, bool returnLast)
         {
+            if (distance <= 0.0f) throw new ArgumentException($"Distance must be positive. Current value: {distance}");
+            
             _curve = curve;
+            _shift = distance / _curve.Length;
+            _returnLast = returnLast;
             _currentPosition = 0.0f;
-            _curve.Build();
-            _currentPoint = curve.GetPoint(_currentPosition);
         }
 
-        public Vector2 GetPoint(float distance)
+        public CurvePoint2D? GetNextPoint()
         {
-            var shift = distance / _curve.Length;
-            var newPosition = _currentPosition + shift;
+            if (IsLastPoint())
+            {
+                if (_returnLast)
+                {
+                    _returnLast = false;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            
+            var point = new CurvePoint2D(_curve, _currentPosition);
+            
+            var newPosition = _currentPosition + _shift;
             _currentPosition = Mathf.Clamp01(newPosition);
-            _currentPoint = _curve.GetPoint(newPosition);
-            return _currentPoint;
-        }
-        
-        public Vector2 GetFirstDerivative()
-        {
-            return _curve.GetFirstDerivative(_currentPosition).normalized + _currentPoint;
-        }
-        
-        public Vector2 GetSecondDerivative()
-        {
-            return _curve.GetSecondDerivative(_currentPosition).normalized + _currentPoint;
-        }
-        
-        public Vector2 GetThirdDerivative()
-        {
-            return _curve.GetThirdDerivative(_currentPosition).normalized + _currentPoint;
+            
+            return point;
         }
 
-        public float GetCurvature()
-        {
-            return _curve.GetCurvature(_currentPosition);
-        }
-
-        public bool IsEnd()
+        private bool IsLastPoint()
         {
             return FloatUtils.EqualsApproximately(_currentPosition, 1.0f);
         }

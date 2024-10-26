@@ -14,8 +14,7 @@ public class Tests3D
             new (400.0f, 0.0f, 400.0f),
             new (400.0f, 0.0f, 100.0f)
         };
-        var curve = new BezierCurve3D(points);
-        curve.Build();
+        var curve = CurveFactory.CreateBezierCurve3D(points);
 
         Draw(curve, points);
             
@@ -33,8 +32,7 @@ public class Tests3D
             new (400.0f, 0.0f, 400.0f),
             new (400.0f, 0.0f, 100.0f)
         };
-        var curve = new BezierCurve3D(points);
-        curve.Build();
+        var curve = CurveFactory.CreateBezierCurve3D(points);
 
         DrawVelocity(curve, points);
             
@@ -52,8 +50,7 @@ public class Tests3D
             new (400.0f, 0.0f, 400.0f),
             new (400.0f, 0.0f, 100.0f)
         };
-        var curve = new BezierCurve3D(points);
-        curve.Build();
+        var curve = CurveFactory.CreateBezierCurve3D(points);
 
         DrawVelocityNormalized(curve, points);
             
@@ -71,8 +68,7 @@ public class Tests3D
             new (250.0f, 0.0f, 250.0f),
             new (250.0f, 0.0f, 400.0f)
         };
-        var curve = new BezierCurve3D(points);
-        curve.Build();
+        var curve = CurveFactory.CreateBezierCurve3D(points);
 
         DrawSignedCurvature(curve, points);
             
@@ -90,8 +86,7 @@ public class Tests3D
             new (250.0f, 0.0f, 250.0f),
             new (250.0f, 0.0f, 400.0f)
         };
-        var curve = new BezierCurve3D(points);
-        curve.Build();
+        var curve = CurveFactory.CreateBezierCurve3D(points);
 
         DrawSignedCurvatureNormalized(curve, points);
             
@@ -116,8 +111,7 @@ public class Tests3D
             2.0f,
             1.0f
         };
-        var curve = new RationalBezierCurve3D(points, ratios);
-        curve.Build();
+        var curve = CurveFactory.CreateRationalBezierCurve3D(points, ratios);
 
         Draw(curve, points);
             
@@ -142,8 +136,7 @@ public class Tests3D
             2.0f,
             1.0f
         };
-        var curve = new RationalBezierCurve3D(points, ratios);
-        curve.Build();
+        var curve = CurveFactory.CreateRationalBezierCurve3D(points, ratios);
 
         DrawVelocity(curve, points);
             
@@ -168,8 +161,7 @@ public class Tests3D
             2.0f,
             1.0f
         };
-        var curve = new RationalBezierCurve3D(points, ratios);
-        curve.Build();
+        var curve = CurveFactory.CreateRationalBezierCurve3D(points, ratios);
 
         DrawVelocityNormalized(curve, points);
             
@@ -194,8 +186,7 @@ public class Tests3D
             2.0f,
             1.0f
         };
-        var curve = new RationalBezierCurve3D(points, ratios);
-        curve.Build();
+        var curve = CurveFactory.CreateRationalBezierCurve3D(points, ratios);
 
         DrawSignedCurvature(curve, points);
             
@@ -220,8 +211,7 @@ public class Tests3D
             2.0f,
             1.0f
         };
-        var curve = new RationalBezierCurve3D(points, ratios);
-        curve.Build();
+        var curve = CurveFactory.CreateRationalBezierCurve3D(points, ratios);
 
         DrawSignedCurvatureNormalized(curve, points);
             

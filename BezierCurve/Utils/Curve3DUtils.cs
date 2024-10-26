@@ -4,6 +4,13 @@ namespace BezierCurve.Utils
 {
 	public static class Curve3DUtils
 	{
+		public static CurvePoint3D GetPointByDistance(this ICurve3D curve, float distance)
+		{
+			var t = distance / curve.Length;
+			t = Mathf.Clamp01(t);
+			return new CurvePoint3D(curve, t);
+		}
+		
 		public static float GetCurvature(this ICurve3D curve, float t)
 		{
 			var firstDerivative = curve.GetFirstDerivative(t);
