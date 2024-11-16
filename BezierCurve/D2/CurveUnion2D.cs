@@ -23,9 +23,9 @@ namespace BezierCurve
 		
 		public float Length { get; }
 
-		public Curve2DIterator GetIterator(float distance, bool returnLast)
+		public CurveIterator2D GetIterator(float distance, bool returnLast)
 		{
-			return new Curve2DIterator(this, distance, returnLast);
+			return new CurveIterator2D(this, distance, returnLast);
 		}
 
 		public Vector2 GetPoint(float t)

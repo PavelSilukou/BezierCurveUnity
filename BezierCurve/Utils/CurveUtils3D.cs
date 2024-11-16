@@ -2,7 +2,7 @@
 
 namespace BezierCurve.Utils
 {
-	public static class Curve3DUtils
+	public static class CurveUtils3D
 	{
 		public static CurvePoint3D GetPointByDistance(this ICurve3D curve, float distance)
 		{

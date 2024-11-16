@@ -23,19 +23,20 @@ namespace BezierCurve
 
 		internal void Build()
 		{
+			var steps = _precision * ControlPoints.Count;
 			var precision = 1.0f / (_precision * ControlPoints.Count);
-
-			for (var i = precision; i < 1.0f; i += precision)
+			for (var i = 1; i <= steps; i++)
 			{
-				var arcLength = Vector3.Distance(GetRawPoint(i - precision), GetRawPoint(i));
+				var step = Mathf.Clamp01(precision * i);
+				var arcLength = Vector3.Distance(GetRawPoint(step - precision), GetRawPoint(step));
 				Length += arcLength;
 				_arcsLength.Add(Length);
 			}
 		}
 
-		public Curve3DIterator GetIterator(float distance, bool returnLast)
+		public CurveIterator3D GetIterator(float distance, bool returnLast)
 		{
-			return new Curve3DIterator(this, distance, returnLast);
+			return new CurveIterator3D(this, distance, returnLast);
 		}
 
 		public virtual Vector3 GetPoint(float t)

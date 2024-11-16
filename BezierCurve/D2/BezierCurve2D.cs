@@ -21,19 +21,20 @@ namespace BezierCurve
 
 		internal void Build()
 		{
+			var steps = _precision * ControlPoints.Count;
 			var precision = 1.0f / (_precision * ControlPoints.Count);
-
-			for (var i = precision; i < 1.0f; i += precision)
+			for (var i = 1; i <= steps; i++)
 			{
-				var arcLength = Vector2.Distance(GetRawPoint(i - precision), GetRawPoint(i));
+				var step = Mathf.Clamp01(precision * i);
+				var arcLength = Vector2.Distance(GetRawPoint(step - precision), GetRawPoint(step));
 				Length += arcLength;
 				_arcsLength.Add(Length);
 			}
 		}
 
-		public Curve2DIterator GetIterator(float distance, bool returnLast)
+		public CurveIterator2D GetIterator(float distance, bool returnLast)
 		{
-			return new Curve2DIterator(this, distance, returnLast);
+			return new CurveIterator2D(this, distance, returnLast);
 		}
 
 		public virtual Vector2 GetPoint(float t)
@@ -108,11 +109,6 @@ namespace BezierCurve
 
 			var index = _arcsLength.FindLastIndex(x => x <= targetLength);
 			var beforeTargetLength = _arcsLength[index];
-
-			if (FloatUtils.EqualsApproximately(beforeTargetLength, targetLength))
-			{
-				return t;
-			}
 
 			return (index + (targetLength - beforeTargetLength) / (_arcsLength[index + 1] - beforeTargetLength)) /
 			       (_arcsLength.Count - 1);

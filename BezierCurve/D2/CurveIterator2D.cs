@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace BezierCurve
 {
-    public class Curve2DIterator
+    public class CurveIterator2D
     {
         private readonly ICurve2D _curve;
         private readonly float _shift;
         private bool _returnLast;
         private float _currentPosition;
 
-        public Curve2DIterator(ICurve2D curve, float distance, bool returnLast)
+        public CurveIterator2D(ICurve2D curve, float distance, bool returnLast)
         {
             if (distance <= 0.0f) throw new ArgumentException($"Distance must be positive. Current value: {distance}");
             
