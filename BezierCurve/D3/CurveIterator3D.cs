@@ -21,9 +21,9 @@ namespace BezierCurve
             _currentPosition = 0.0f;
         }
 
-        public CurvePoint3D? GetNextPoint()
+        public CurvePoint3D? GetNext()
         {
-            if (IsLastPoint())
+            if (IsLast())
             {
                 if (_returnLast)
                 {
@@ -43,7 +43,12 @@ namespace BezierCurve
             return point;
         }
 
-        private bool IsLastPoint()
+        public bool HasNext()
+        {
+            return _returnLast && !IsLast();
+        }
+
+        private bool IsLast()
         {
             return FloatUtils.EqualsApproximately(_currentPosition, 1.0f);
         }
