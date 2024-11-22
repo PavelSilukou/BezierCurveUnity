@@ -5,6 +5,24 @@ public class Tests2D
 {
     [Test]
     [SupportedOSPlatform("windows")]
+    public void Test()
+    {
+        var points = new List<Vector2>
+        {
+            new (100.0f, 100.0f),
+            new (100.0f, 200.0f),
+            new (200.0f, 200.0f),
+            new (200.0f, 300.0f)
+        };
+        var curve = BezierCurveFactory2D.CreateBezierCurve(points);
+        
+        Draw(curve);
+            
+        Assert.Pass();
+    }
+    
+    [Test]
+    [SupportedOSPlatform("windows")]
     public void Test_BezierCurve4Points()
     {
         var points = new List<Vector2>
@@ -14,9 +32,9 @@ public class Tests2D
             new (400.0f, 400.0f),
             new (400.0f, 100.0f)
         };
-        var curve = CurveFactory.CreateBezierCurve2D(points);
+        var curve = BezierCurveFactory2D.CreateBezierCurve(points);
 
-        Draw(curve, points);
+        Draw(curve);
             
         Assert.Pass();
     }
@@ -32,9 +50,9 @@ public class Tests2D
             new (400.0f, 400.0f),
             new (400.0f, 100.0f)
         };
-        var curve = CurveFactory.CreateBezierCurve2D(points);
+        var curve = BezierCurveFactory2D.CreateBezierCurve(points);
 
-        DrawVelocity(curve, points);
+        DrawVelocity(curve);
             
         Assert.Pass();
     }
@@ -50,9 +68,9 @@ public class Tests2D
             new (400.0f, 400.0f),
             new (400.0f, 100.0f)
         };
-        var curve = CurveFactory.CreateBezierCurve2D(points);
+        var curve = BezierCurveFactory2D.CreateBezierCurve(points);
 
-        DrawVelocityNormalized(curve, points);
+        DrawVelocityNormalized(curve);
             
         Assert.Pass();
     }
@@ -68,9 +86,9 @@ public class Tests2D
             new (250.0f, 250.0f),
             new (250.0f, 400.0f)
         };
-        var curve = CurveFactory.CreateBezierCurve2D(points);
+        var curve = BezierCurveFactory2D.CreateBezierCurve(points);
 
-        DrawSignedCurvature(curve, points);
+        DrawSignedCurvature(curve);
             
         Assert.Pass();
     }
@@ -86,9 +104,9 @@ public class Tests2D
             new (250.0f, 250.0f),
             new (250.0f, 400.0f)
         };
-        var curve = CurveFactory.CreateBezierCurve2D(points);
+        var curve = BezierCurveFactory2D.CreateBezierCurve(points);
 
-        DrawSignedCurvatureNormalized(curve, points);
+        DrawSignedCurvatureNormalized(curve);
             
         Assert.Pass();
     }
@@ -111,9 +129,9 @@ public class Tests2D
             2.0f,
             1.0f
         };
-        var curve = CurveFactory.CreateRationalBezierCurve2D(points, ratios);
+        var curve = BezierCurveFactory2D.CreateRationalBezierCurve(points, ratios);
 
-        Draw(curve, points);
+        Draw(curve);
             
         Assert.Pass();
     }
@@ -136,9 +154,9 @@ public class Tests2D
             2.0f,
             1.0f
         };
-        var curve = CurveFactory.CreateRationalBezierCurve2D(points, ratios);
+        var curve = BezierCurveFactory2D.CreateRationalBezierCurve(points, ratios);
 
-        DrawVelocity(curve, points);
+        DrawVelocity(curve);
             
         Assert.Pass();
     }
@@ -161,9 +179,9 @@ public class Tests2D
             2.0f,
             1.0f
         };
-        var curve = CurveFactory.CreateRationalBezierCurve2D(points, ratios);
+        var curve = BezierCurveFactory2D.CreateRationalBezierCurve(points, ratios);
 
-        DrawVelocityNormalized(curve, points);
+        DrawVelocityNormalized(curve);
             
         Assert.Pass();
     }
@@ -186,9 +204,9 @@ public class Tests2D
             2.0f,
             1.0f
         };
-        var curve = CurveFactory.CreateRationalBezierCurve2D(points, ratios);
+        var curve = BezierCurveFactory2D.CreateRationalBezierCurve(points, ratios);
 
-        DrawSignedCurvature(curve, points);
+        DrawSignedCurvature(curve);
             
         Assert.Pass();
     }
@@ -211,21 +229,21 @@ public class Tests2D
             2.0f,
             1.0f
         };
-        var curve = CurveFactory.CreateRationalBezierCurve2D(points, ratios);
+        var curve = BezierCurveFactory2D.CreateRationalBezierCurve(points, ratios);
 
-        DrawSignedCurvatureNormalized(curve, points);
+        DrawSignedCurvatureNormalized(curve);
             
         Assert.Pass();
     }
 
     [SupportedOSPlatform("windows")]
-    private static void Draw(ICurve2D curve, List<Vector2> points)
+    private static void Draw(IBezierCurve2D bezierCurve)
     {
         var bitmap = new Bitmap(500, 500);
             
-        DrawCurve(bitmap, curve);
+        DrawCurve(bitmap, bezierCurve);
 
-        foreach (var point in points)
+        foreach (var point in bezierCurve.ControlPoints)
         {
             DrawPixel(bitmap, point);
             DrawPoint(bitmap, point);
@@ -235,14 +253,14 @@ public class Tests2D
     }
         
     [SupportedOSPlatform("windows")]
-    private static void DrawVelocity(ICurve2D curve, List<Vector2> points)
+    private static void DrawVelocity(IBezierCurve2D bezierCurve)
     {
         var bitmap = new Bitmap(500, 500);
             
-        DrawCurve(bitmap, curve);
-        DrawCurveVelocity(bitmap, curve);
+        DrawCurve(bitmap, bezierCurve);
+        DrawCurveVelocity(bitmap, bezierCurve);
 
-        foreach (var point in points)
+        foreach (var point in bezierCurve.ControlPoints)
         {
             DrawPixel(bitmap, point);
             DrawPoint(bitmap, point);
@@ -252,14 +270,14 @@ public class Tests2D
     }
         
     [SupportedOSPlatform("windows")]
-    private static void DrawVelocityNormalized(ICurve2D curve, List<Vector2> points)
+    private static void DrawVelocityNormalized(IBezierCurve2D bezierCurve)
     {
         var bitmap = new Bitmap(500, 500);
             
-        DrawCurve(bitmap, curve);
-        DrawCurveVelocityNormalized(bitmap, curve);
+        DrawCurve(bitmap, bezierCurve);
+        DrawCurveVelocityNormalized(bitmap, bezierCurve);
 
-        foreach (var point in points)
+        foreach (var point in bezierCurve.ControlPoints)
         {
             DrawPixel(bitmap, point);
             DrawPoint(bitmap, point);
@@ -269,14 +287,14 @@ public class Tests2D
     }
 
     [SupportedOSPlatform("windows")]
-    private static void DrawSignedCurvature(ICurve2D curve, List<Vector2> points)
+    private static void DrawSignedCurvature(IBezierCurve2D bezierCurve)
     {
         var bitmap = new Bitmap(500, 500);
             
-        DrawCurve(bitmap, curve);
-        DrawCurveSignedCurvature(bitmap, curve);
+        DrawCurve(bitmap, bezierCurve);
+        DrawCurveSignedCurvature(bitmap, bezierCurve);
 
-        foreach (var point in points)
+        foreach (var point in bezierCurve.ControlPoints)
         {
             DrawPixel(bitmap, point);
             DrawPoint(bitmap, point);
@@ -286,14 +304,14 @@ public class Tests2D
     }
         
     [SupportedOSPlatform("windows")]
-    private static void DrawSignedCurvatureNormalized(ICurve2D curve, List<Vector2> points)
+    private static void DrawSignedCurvatureNormalized(IBezierCurve2D bezierCurve)
     {
         var bitmap = new Bitmap(500, 500);
             
-        DrawCurve(bitmap, curve);
-        DrawCurveSignedCurvatureNormalized(bitmap, curve);
+        DrawCurve(bitmap, bezierCurve);
+        DrawCurveSignedCurvatureNormalized(bitmap, bezierCurve);
 
-        foreach (var point in points)
+        foreach (var point in bezierCurve.ControlPoints)
         {
             DrawPixel(bitmap, point);
             DrawPoint(bitmap, point);
@@ -345,7 +363,7 @@ public class Tests2D
     }
 
     [SupportedOSPlatform("windows")]
-    private static void DrawCurve(Image bitmap, ICurve2D curve)
+    private static void DrawCurve(Image bitmap, IBezierCurve2D bezierCurve)
     {
         var pen = new Pen(Brushes.Goldenrod, 3);
 
@@ -353,8 +371,8 @@ public class Tests2D
         const float step = 1.0f / 50;
         for (var t = 0.0f; t < 1.0f; t += step)
         {
-            var point1 = curve.GetPoint(t);
-            var point2 = curve.GetPoint(t + step);
+            var point1 = bezierCurve.GetPoint(t);
+            var point2 = bezierCurve.GetPoint(t + step);
             var point1Int = GetRotatedPoint(bitmap, point1);
             var point2Int = GetRotatedPoint(bitmap, point2);
                     
@@ -363,7 +381,7 @@ public class Tests2D
     }
         
     [SupportedOSPlatform("windows")]
-    private static void DrawCurveVelocity(Image bitmap, ICurve2D curve)
+    private static void DrawCurveVelocity(Image bitmap, IBezierCurve2D bezierCurve)
     {
         var pen = new Pen(Brushes.CornflowerBlue, 2);
 
@@ -371,9 +389,9 @@ public class Tests2D
         const float step = 1.0f / 5;
         for (var t = 0.0f; t <= 1.0f; t += step)
         {
-            var point1 = curve.GetPoint(t);
+            var point1 = bezierCurve.GetPoint(t);
             var point1Int = GetRotatedPoint(bitmap, point1);
-            var velocity = curve.GetFirstDerivative(t) + point1;
+            var velocity = bezierCurve.GetFirstDerivative(t) + point1;
             var velocityInt = GetRotatedPoint(bitmap, velocity);
                     
             graphics.DrawLine(pen, point1Int.x, point1Int.y, velocityInt.x, velocityInt.y);
@@ -381,7 +399,7 @@ public class Tests2D
     }
         
     [SupportedOSPlatform("windows")]
-    private static void DrawCurveVelocityNormalized(Image bitmap, ICurve2D curve)
+    private static void DrawCurveVelocityNormalized(Image bitmap, IBezierCurve2D bezierCurve)
     {
         var pen = new Pen(Brushes.CornflowerBlue, 2);
 
@@ -389,9 +407,9 @@ public class Tests2D
         const float step = 1.0f / 5;
         for (var t = 0.0f; t <= 1.0f; t += step)
         {
-            var point1 = curve.GetPoint(t);
+            var point1 = bezierCurve.GetPoint(t);
             var point1Int = GetRotatedPoint(bitmap, point1);
-            var velocity = curve.GetFirstDerivative(t).normalized * 100 + point1;
+            var velocity = bezierCurve.GetFirstDerivative(t).normalized * 100 + point1;
             var velocityInt = GetRotatedPoint(bitmap, velocity);
                     
             graphics.DrawLine(pen, point1Int.x, point1Int.y, velocityInt.x, velocityInt.y);
@@ -399,7 +417,7 @@ public class Tests2D
     }
         
     [SupportedOSPlatform("windows")]
-    private static void DrawCurveSignedCurvature(Image bitmap, ICurve2D curve)
+    private static void DrawCurveSignedCurvature(Image bitmap, IBezierCurve2D bezierCurve)
     {
         var pen = new Pen(Brushes.CornflowerBlue, 2);
 
@@ -407,12 +425,12 @@ public class Tests2D
         const float step = 1.0f / 5;
         for (var t = 0.0f; t <= 1.0f; t += step)
         {
-            var curvature = curve.GetCurvature(t);
+            var curvature = bezierCurve.GetCurvature(t);
             var sign = Math.Sign(curvature);
                 
-            var point1 = curve.GetPoint(t);
+            var point1 = bezierCurve.GetPoint(t);
             var point1Int = GetRotatedPoint(bitmap, point1);
-            var velocity = curve.GetFirstDerivative(t);
+            var velocity = bezierCurve.GetFirstDerivative(t);
 
             var curvatureVector = Vector2.Perpendicular(-1 * sign * velocity);
             curvatureVector = curvatureVector * Math.Abs(curvature) * 10 + point1;
@@ -423,7 +441,7 @@ public class Tests2D
     }
         
     [SupportedOSPlatform("windows")]
-    private static void DrawCurveSignedCurvatureNormalized(Image bitmap, ICurve2D curve)
+    private static void DrawCurveSignedCurvatureNormalized(Image bitmap, IBezierCurve2D bezierCurve)
     {
         var pen = new Pen(Brushes.CornflowerBlue, 2);
 
@@ -431,12 +449,12 @@ public class Tests2D
         const float step = 1.0f / 5;
         for (var t = 0.0f; t <= 1.0f; t += step)
         {
-            var curvature = curve.GetCurvature(t);
+            var curvature = bezierCurve.GetCurvature(t);
             var sign = Math.Sign(curvature);
                     
-            var point1 = curve.GetPoint(t);
+            var point1 = bezierCurve.GetPoint(t);
             var point1Int = GetRotatedPoint(bitmap, point1);
-            var velocity = curve.GetFirstDerivative(t);
+            var velocity = bezierCurve.GetFirstDerivative(t);
 
             var curvatureVector = Vector2.Perpendicular(-1 * sign * velocity);
             curvatureVector = curvatureVector.normalized * 40 + point1;

@@ -1,55 +1,73 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BezierCurve.Utils;
 using UnityEngine;
 
 namespace BezierCurve
 {
-	public sealed class CurveUnion2D : ICurve2D
+	public sealed class BezierCurveUnion3D : IBezierCurve3D
 	{
-		private readonly List<ICurve2D> _curves;
-		private readonly List<float> _curvesLength;
-
-		public CurveUnion2D(List<ICurve2D> curves)
-		{
-			_curves = curves;
-			_curvesLength = new List<float>{ 0 };
-			Length = 0;
-			foreach (var c in _curves)
-			{
-				Length += c.Length;
-				_curvesLength.Add(Length);
-			}
-		}
-		
+		public List<Vector3> ControlPoints { get; }
+		public List<float> ControlPointRatios { get; }
+		public int Precision { get; }
 		public float Length { get; }
 
-		public CurveIterator2D GetIterator(float distance, bool returnLast)
+		private readonly List<IBezierCurve3D> _curves;
+		private readonly List<float> _curvesLength = new() { 0 };
+
+		internal BezierCurveUnion3D(List<IBezierCurve3D> curves)
 		{
-			return new CurveIterator2D(this, distance, returnLast);
+			_curves = curves;
+			ControlPoints = curves.SelectMany(_ => ControlPoints).ToList();
+			ControlPointRatios = curves.SelectMany(_ => ControlPointRatios).ToList();
+			Precision = curves.Sum(curve => curve.Precision) / curves.Count;
+			Length = curves.Sum(curve => curve.Length);
 		}
 
-		public Vector2 GetPoint(float t)
+		internal void Build()
+		{
+			var length = 0.0f;
+			foreach (var c in _curves)
+			{
+				length += c.Length;
+				_curvesLength.Add(length);
+			}
+		}
+
+		public Vector3 GetPoint(float t)
 		{
 			var pointData = CalculatePointData(t);
 			return _curves[pointData.CurveId].GetPoint(pointData.T);
 		}
 
-		public Vector2 GetFirstDerivative(float t)
+		public Vector3 GetFirstDerivative(float t)
 		{
 			var pointData = CalculatePointData(t);
 			return _curves[pointData.CurveId].GetFirstDerivative(pointData.T);
 		}
 
-		public Vector2 GetSecondDerivative(float t)
+		public Vector3 GetSecondDerivative(float t)
 		{
 			var pointData = CalculatePointData(t);
 			return _curves[pointData.CurveId].GetSecondDerivative(pointData.T);
 		}
 
-		public Vector2 GetThirdDerivative(float t)
+		public Vector3 GetThirdDerivative(float t)
 		{
 			var pointData = CalculatePointData(t);
 			return _curves[pointData.CurveId].GetThirdDerivative(pointData.T);
+		}
+
+		public float GetCurvature(float t)
+		{
+			var pointData = CalculatePointData(t);
+			return _curves[pointData.CurveId].GetCurvature(pointData.T);
+		}
+
+		public float GetTorsion(float t)
+		{
+			var pointData = CalculatePointData(t);
+			return _curves[pointData.CurveId].GetTorsion(pointData.T);
 		}
 
 		private PointData CalculatePointData(float t)

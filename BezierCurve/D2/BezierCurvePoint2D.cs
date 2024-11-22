@@ -1,16 +1,15 @@
-﻿using BezierCurve.Utils;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace BezierCurve
 {
-	public class CurvePoint2D
+	public class BezierCurvePoint2D
 	{
-		private readonly ICurve2D _curve;
+		private readonly IBezierCurve2D _curve;
 		private readonly float _t;
 
-		internal CurvePoint2D(ICurve2D curve, float t)
+		internal BezierCurvePoint2D(IBezierCurve2D bezierCurve, float t)
 		{
-			_curve = curve;
+			_curve = bezierCurve;
 			_t = t;
 		}
 

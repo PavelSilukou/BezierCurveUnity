@@ -1,16 +1,15 @@
-﻿using BezierCurve.Utils;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace BezierCurve
 {
-	public class CurvePoint3D
+	public class BezierCurvePoint3D
 	{
-		private readonly ICurve3D _curve;
+		private readonly IBezierCurve3D _curve;
 		private readonly float _t;
 
-		internal CurvePoint3D(ICurve3D curve, float t)
+		internal BezierCurvePoint3D(IBezierCurve3D bezierCurve, float t)
 		{
-			_curve = curve;
+			_curve = bezierCurve;
 			_t = t;
 		}
 
@@ -27,6 +26,11 @@ namespace BezierCurve
 		public float GetCurvature()
 		{
 			return _curve.GetCurvature(_t);
+		}
+		
+		public float GetTorsion()
+		{
+			return _curve.GetTorsion(_t);
 		}
 	}
 }

@@ -4,24 +4,24 @@ using UnityEngine;
 
 namespace BezierCurve
 {
-    public class CurveIterator2D
+    public class BezierCurveDistanceIterator3D
     {
-        private readonly ICurve2D _curve;
+        private readonly IBezierCurve3D _bezierCurve;
         private readonly float _shift;
         private bool _returnLast;
         private float _currentPosition;
 
-        public CurveIterator2D(ICurve2D curve, float distance, bool returnLast)
+        public BezierCurveDistanceIterator3D(IBezierCurve3D bezierCurve, float distance, bool returnLast)
         {
             if (distance <= 0.0f) throw new ArgumentException($"Distance must be positive. Current value: {distance}");
             
-            _curve = curve;
-            _shift = distance / _curve.Length;
+            _bezierCurve = bezierCurve;
+            _shift = distance / _bezierCurve.Length;
             _returnLast = returnLast;
             _currentPosition = 0.0f;
         }
 
-        public CurvePoint2D? GetNext()
+        public BezierCurvePoint3D? GetNext()
         {
             if (IsLast())
             {
@@ -35,7 +35,7 @@ namespace BezierCurve
                 }
             }
             
-            var point = new CurvePoint2D(_curve, _currentPosition);
+            var point = new BezierCurvePoint3D(_bezierCurve, _currentPosition);
             
             var newPosition = _currentPosition + _shift;
             _currentPosition = Mathf.Clamp01(newPosition);

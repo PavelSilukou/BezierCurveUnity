@@ -17,7 +17,7 @@ namespace BezierCurve.Utils
 
 		public static float GetBernsteinBasisPolynomials(int n, int i, float t)
 		{
-			return GetBinomialCoefficient(n, i) * Mathf.Pow(t, i) * Mathf.Pow((1 - t), (n - i));
+			return GetBinomialCoefficient(n, i) * Mathf.Pow(t, i) * Mathf.Pow(1 - t, n - i);
 		}
 	}
 }

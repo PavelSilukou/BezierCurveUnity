@@ -1,47 +1,19 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BezierCurve.Utils;
 using UnityEngine;
 
-// https://pomax.github.io/bezierinfo/index.html
-// https://www.mn.uio.no/math/english/people/aca/michaelf/papers/bez.pdf
 namespace BezierCurve
 {
-	public class BezierCurve3D: ICurve3D
+	public class BezierCurve3D : RationalBezierCurve3D
 	{
-		protected readonly List<Vector3> ControlPoints;
-
-		private readonly List<float> _arcsLength = new List<float> { 0 };
-		private readonly int _precision;
-
-		internal BezierCurve3D(List<Vector3> controlPoints, int precision = 20)
+		internal BezierCurve3D(List<Vector3> controlPoints, int precision = 1) : base(controlPoints, CalculateControlPointRatios(controlPoints), precision)
 		{
-			ControlPoints = controlPoints;
-			_precision = precision;
 		}
 
-		public float Length { get; private set; }
-
-		internal void Build()
+		public override Vector3 GetPoint(float t)
 		{
-			var steps = _precision * ControlPoints.Count;
-			var precision = 1.0f / (_precision * ControlPoints.Count);
-			for (var i = 1; i <= steps; i++)
-			{
-				var step = Mathf.Clamp01(precision * i);
-				var arcLength = Vector3.Distance(GetRawPoint(step - precision), GetRawPoint(step));
-				Length += arcLength;
-				_arcsLength.Add(Length);
-			}
-		}
-
-		public CurveIterator3D GetIterator(float distance, bool returnLast)
-		{
-			return new CurveIterator3D(this, distance, returnLast);
-		}
-
-		public virtual Vector3 GetPoint(float t)
-		{
-			t = NormalizeT(t);
+			t = Mathf.Clamp01(t);
 			var n = ControlPoints.Count - 1;
 
 			var result = Vector3.zero;
@@ -53,9 +25,9 @@ namespace BezierCurve
 			return result;
 		}
         
-		public virtual Vector3 GetFirstDerivative(float t)
+		public override Vector3 GetFirstDerivative(float t)
 		{
-			t = NormalizeT(t);
+			t = Mathf.Clamp01(t);
 			var n = ControlPoints.Count - 1;
 
 			var result = Vector3.zero;
@@ -68,9 +40,9 @@ namespace BezierCurve
 			return n * result;
 		}
 
-		public virtual Vector3 GetSecondDerivative(float t)
+		public override Vector3 GetSecondDerivative(float t)
 		{
-			t = NormalizeT(t);
+			t = Mathf.Clamp01(t);
 			var n = ControlPoints.Count - 1;
 
 			var result = Vector3.zero;
@@ -85,9 +57,9 @@ namespace BezierCurve
 			return n * (n - 1) * result;
 		}
 
-		public virtual Vector3 GetThirdDerivative(float t)
+		public override Vector3 GetThirdDerivative(float t)
 		{
-			t = NormalizeT(t);
+			t = Mathf.Clamp01(t);
 			var n = ControlPoints.Count - 1;
 
 			var result = Vector3.zero;
@@ -103,37 +75,10 @@ namespace BezierCurve
 
 			return n * (n - 1) * (n - 2) * result;
 		}
-
-		protected float NormalizeT(float t)
+		
+		private static List<float> CalculateControlPointRatios(List<Vector3> controlPoints)
 		{
-			t = Mathf.Clamp01(t);
-			var targetLength = Length * t;
-
-			var index = _arcsLength.FindLastIndex(x => x <= targetLength);
-			var beforeTargetLength = _arcsLength[index];
-
-			if (FloatUtils.EqualsApproximately(beforeTargetLength, targetLength))
-			{
-				return t;
-			}
-
-			return (index + (targetLength - beforeTargetLength) / (_arcsLength[index + 1] - beforeTargetLength)) /
-			       (_arcsLength.Count - 1);
-		}
-
-		protected virtual Vector3 GetRawPoint(float t)
-		{
-			t = Mathf.Clamp01(t);
-
-			var n = ControlPoints.Count - 1;
-
-			var result = Vector3.zero;
-			for (var i = 0; i <= n; i++)
-			{
-				result += MathUtils.GetBernsteinBasisPolynomials(n, i, t) * ControlPoints[i];
-			}
-
-			return result;
+			return controlPoints.Select(_ => 1.0f).ToList();
 		}
 	}
 }
