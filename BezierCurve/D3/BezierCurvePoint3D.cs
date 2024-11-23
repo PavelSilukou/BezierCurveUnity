@@ -7,9 +7,9 @@ namespace BezierCurve
 		private readonly IBezierCurve3D _curve;
 		private readonly float _t;
 
-		internal BezierCurvePoint3D(IBezierCurve3D bezierCurve, float t)
+		internal BezierCurvePoint3D(IBezierCurve3D curve, float t)
 		{
-			_curve = bezierCurve;
+			_curve = curve;
 			_t = t;
 		}
 

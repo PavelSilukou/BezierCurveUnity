@@ -5,24 +5,6 @@ public class Tests2D
 {
     [Test]
     [SupportedOSPlatform("windows")]
-    public void Test()
-    {
-        var points = new List<Vector2>
-        {
-            new (100.0f, 100.0f),
-            new (100.0f, 200.0f),
-            new (200.0f, 200.0f),
-            new (200.0f, 300.0f)
-        };
-        var curve = BezierCurveFactory2D.CreateBezierCurve(points);
-        
-        Draw(curve);
-            
-        Assert.Pass();
-    }
-    
-    [Test]
-    [SupportedOSPlatform("windows")]
     public void Test_BezierCurve4Points()
     {
         var points = new List<Vector2>
@@ -45,7 +27,7 @@ public class Tests2D
     {
         var points = new List<Vector2>
         {
-            new (100.0f, 00.0f),
+            new (100.0f, 100.0f),
             new (100.0f, 400.0f),
             new (400.0f, 400.0f),
             new (400.0f, 100.0f)

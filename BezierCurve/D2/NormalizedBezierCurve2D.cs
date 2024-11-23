@@ -26,7 +26,7 @@ namespace BezierCurve
 		internal void Build()
 		{
 			var steps = Precision * ControlPoints.Count;
-			var precisionStep = 1.0f / (Precision * ControlPoints.Count);
+			var precisionStep = 1.0f / steps;
 			var length = 0.0f;
 			for (var i = 1; i <= steps; i++)
 			{

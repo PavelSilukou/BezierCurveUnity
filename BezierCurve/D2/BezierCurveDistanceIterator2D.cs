@@ -6,17 +6,17 @@ namespace BezierCurve
 {
     public class BezierCurveDistanceIterator2D
     {
-        private readonly IBezierCurve2D _bezierCurve;
+        private readonly IBezierCurve2D _curve;
         private readonly float _shift;
         private bool _returnLast;
         private float _currentPosition;
 
-        public BezierCurveDistanceIterator2D(IBezierCurve2D bezierCurve, float distance, bool returnLast)
+        public BezierCurveDistanceIterator2D(NormalizedBezierCurve2D curve, float distance, bool returnLast)
         {
             if (distance <= 0.0f) throw new ArgumentException($"Distance must be positive. Current value: {distance}");
             
-            _bezierCurve = bezierCurve;
-            _shift = distance / _bezierCurve.Length;
+            _curve = curve;
+            _shift = distance / _curve.Length;
             _returnLast = returnLast;
             _currentPosition = 0.0f;
         }
@@ -35,7 +35,7 @@ namespace BezierCurve
                 }
             }
             
-            var point = new BezierCurvePoint2D(_bezierCurve, _currentPosition);
+            var point = new BezierCurvePoint2D(_curve, _currentPosition);
             
             var newPosition = _currentPosition + _shift;
             _currentPosition = Mathf.Clamp01(newPosition);
@@ -45,7 +45,7 @@ namespace BezierCurve
 
         public bool HasNext()
         {
-            return _returnLast && !IsLast();
+            return _returnLast || !IsLast();
         }
 
         private bool IsLast()

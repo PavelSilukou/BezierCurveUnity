@@ -7,9 +7,9 @@ namespace BezierCurve
 		private readonly IBezierCurve2D _curve;
 		private readonly float _t;
 
-		internal BezierCurvePoint2D(IBezierCurve2D bezierCurve, float t)
+		internal BezierCurvePoint2D(IBezierCurve2D curve, float t)
 		{
-			_curve = bezierCurve;
+			_curve = curve;
 			_t = t;
 		}
 

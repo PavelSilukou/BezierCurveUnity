@@ -4,11 +4,11 @@ namespace BezierCurve.Utils
 {
 	public static class CurveUtils3D
 	{
-		public static BezierCurvePoint3D GetPointByDistance(this IBezierCurve3D bezierCurve, float distance)
+		public static BezierCurvePoint3D GetPointByDistance(this IBezierCurve3D curve, float distance)
 		{
-			var t = distance / bezierCurve.Length;
+			var t = distance / curve.Length;
 			t = Mathf.Clamp01(t);
-			return new BezierCurvePoint3D(bezierCurve, t);
+			return new BezierCurvePoint3D(curve, t);
 		}
 	}
 }
