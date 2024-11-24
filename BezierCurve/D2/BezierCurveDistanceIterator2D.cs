@@ -1,54 +1,32 @@
 ﻿using System;
 using BezierCurve.Utils;
-using UnityEngine;
 
 namespace BezierCurve
 {
-    public class BezierCurveDistanceIterator2D
+    public class BezierCurveDistanceIterator2D : BezierCurveIterator2D
     {
-        private readonly IBezierCurve2D _curve;
         private readonly float _shift;
-        private bool _returnLast;
         private float _currentPosition;
 
-        public BezierCurveDistanceIterator2D(NormalizedBezierCurve2D curve, float distance, bool returnLast)
+        public BezierCurveDistanceIterator2D(NormalizedBezierCurve2D curve, float distance, bool returnLast) : base(curve, returnLast)
         {
             if (distance <= 0.0f) throw new ArgumentException($"Distance must be positive. Current value: {distance}");
             
-            _curve = curve;
-            _shift = distance / _curve.Length;
-            _returnLast = returnLast;
+            _shift = distance / curve.Length;
             _currentPosition = 0.0f;
         }
 
-        public BezierCurvePoint2D? GetNext()
+        protected override BezierCurvePoint2D CalculateNext()
         {
-            if (IsLast())
-            {
-                if (_returnLast)
-                {
-                    _returnLast = false;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            
-            var point = new BezierCurvePoint2D(_curve, _currentPosition);
+            var point = new BezierCurvePoint2D(Curve, _currentPosition);
             
             var newPosition = _currentPosition + _shift;
-            _currentPosition = Mathf.Clamp01(newPosition);
+            _currentPosition = RoundClamp01(newPosition);
             
             return point;
         }
 
-        public bool HasNext()
-        {
-            return _returnLast || !IsLast();
-        }
-
-        private bool IsLast()
+        protected override bool IsLast()
         {
             return FloatUtils.EqualsApproximately(_currentPosition, 1.0f);
         }

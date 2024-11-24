@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace BezierCurve
 {
-    public class BezierCurveAngleIterator2D : BezierCurveIterator2D
+    public class BezierCurveAngleIterator3D : BezierCurveIterator3D
     {
         private readonly AngleThreshold _angleThreshold;
         private PositionAngle _currentPositionAngle;
         private readonly List<Arc> _arcs;
 
-        public BezierCurveAngleIterator2D(IBezierCurve2D curve, float angle, float angleThreshold, bool returnLast) : base(curve, returnLast)
+        public BezierCurveAngleIterator3D(IBezierCurve3D curve, float angle, float angleThreshold, bool returnLast) : base(curve, returnLast)
         {
             if (angle <= 0.0f) throw new ArgumentException($"Angle must be positive. Current value: {angle}");
             
@@ -20,9 +20,9 @@ namespace BezierCurve
             _arcs = CalculateArcs(curve, angle);
         }
         
-        protected override BezierCurvePoint2D CalculateNext()
+        protected override BezierCurvePoint3D CalculateNext()
         {
-            var point = new BezierCurvePoint2D(Curve, _currentPositionAngle.Position);
+            var point = new BezierCurvePoint3D(Curve, _currentPositionAngle.Position);
             
             var nextPositionAngle = GetNextPositionAngle(_currentPositionAngle);
             _currentPositionAngle = new PositionAngle(RoundClamp01(nextPositionAngle.Position), nextPositionAngle.Angle);
@@ -35,7 +35,7 @@ namespace BezierCurve
             return FloatUtils.EqualsApproximately(_currentPositionAngle.Position, 1.0f);
         }
 
-        private static List<Arc> CalculateArcs(IBezierCurve2D curve, float angle)
+        private static List<Arc> CalculateArcs(IBezierCurve3D curve, float angle)
         {
             var result = new List<Arc>();
             
@@ -56,7 +56,7 @@ namespace BezierCurve
                     lastAngleSign += 1;
                 }
                 
-                var stepAngle = Vector2.Angle(curve.GetFirstDerivative(step - precisionStep),
+                var stepAngle = Vector3.Angle(curve.GetFirstDerivative(step - precisionStep),
                     curve.GetFirstDerivative(step));
 
                 var innerSteps = (int)(stepAngle / angle);
@@ -65,7 +65,7 @@ namespace BezierCurve
                 for (var j = 1; j <= innerSteps; j++)
                 {
                     var innerStep = Mathf.Clamp01(precisionStep * (i - 1) + innerPrecisionStep * j);
-                    var innerStepAngle = Vector2.Angle(curve.GetFirstDerivative(innerStep - innerPrecisionStep),
+                    var innerStepAngle = Vector3.Angle(curve.GetFirstDerivative(innerStep - innerPrecisionStep),
                         curve.GetFirstDerivative(innerStep));
                     totalAngle += innerStepAngle;
 
@@ -95,14 +95,14 @@ namespace BezierCurve
         
         private PositionAngle CalculateNextPositionAngle(PositionAngle positionAngle, float endT)
         {
-            var angle = Vector2.Angle(Curve.GetFirstDerivative(positionAngle.Position), Curve.GetFirstDerivative(endT));
+            var angle = Vector3.Angle(Curve.GetFirstDerivative(positionAngle.Position), Curve.GetFirstDerivative(endT));
             if (_angleThreshold.IsInRange(angle)) return new PositionAngle(endT, positionAngle.Angle + angle);
 
             var startT = positionAngle.Position;
             var halfT = positionAngle.Position + _angleThreshold.Value / (angle / (endT - positionAngle.Position));
             while (true)
             {
-                angle = Vector2.Angle(Curve.GetFirstDerivative(positionAngle.Position), Curve.GetFirstDerivative(halfT));
+                angle = Vector3.Angle(Curve.GetFirstDerivative(positionAngle.Position), Curve.GetFirstDerivative(halfT));
                 if (_angleThreshold.IsInRange(angle))
                 {
                     return new PositionAngle(halfT, positionAngle.Angle + angle);
